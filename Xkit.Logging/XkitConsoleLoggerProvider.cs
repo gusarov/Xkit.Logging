@@ -14,9 +14,9 @@ namespace Xkit.Logging.ConsoleLogger;
 internal sealed class XkitConsoleLoggerProvider : ILoggerProvider
 {
 	private readonly IDisposable? _onChangeSubscription;
-	private XkitConsoleLoggerConfiguration _config;
 	private readonly ConcurrentDictionary<string, XkitConsoleLogger> _loggers = new();
-	private XkitConsoleLoggerDispatch _dispatch;
+	private readonly XkitConsoleLoggerDispatch _dispatch;
+	private XkitConsoleLoggerConfiguration _config;
 
 	public XkitConsoleLoggerProvider(IOptionsMonitor<XkitConsoleLoggerConfiguration> config)
 	{

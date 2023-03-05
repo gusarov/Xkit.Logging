@@ -14,14 +14,21 @@ namespace Xkit.Logging.ConsoleLogger;
 internal class XkitConsoleLoggerDispatch
 {
 	private XkitConsoleLoggerProvider _customConsoleLoggerProvider;
+	private XkitConsoleLoggerConfiguration _config;
 	private ConcurrentQueue<Entry> _entries = new ConcurrentQueue<Entry>();
 	private AutoResetEvent _event = new AutoResetEvent(false);
 
+	string _dateFormat;
+
+
 	public XkitConsoleLoggerDispatch(XkitConsoleLoggerProvider customConsoleLoggerProvider)
 	{
+		_customConsoleLoggerProvider = customConsoleLoggerProvider ?? throw new ArgumentNullException(nameof(customConsoleLoggerProvider));
+		_config = _customConsoleLoggerProvider.GetConfig();
+		_dateFormat = _config.DateTimeFormat;
+
 		Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-		_customConsoleLoggerProvider = customConsoleLoggerProvider;
 		new Thread(Worker)
 		{
 			IsBackground = true,
@@ -47,8 +54,18 @@ internal class XkitConsoleLoggerDispatch
 	{
 		var originalColor = Console.ForegroundColor;
 		var color = GetColor(entry);
+		var type = entry.StateType;
+		var typeLabel = type?.ToString();
+		if (typeLabel == "Microsoft.Extensions.Logging.FormattedLogValues") // omit default state type
+		{
+			typeLabel = null;
+		}
+		else
+		{
+			typeLabel += ": ";
+		}
 		Console.ForegroundColor = Dark(color);
-		Console.Write($"[{entry.Time:MM'/'dd HH:mm:ss}] {Level(entry.LogLevel).ToUpperInvariant()}: {entry.StateType}: ");
+		Console.Write($"[{entry.Time.ToLocalIfConfigured(_config).ToString(_dateFormat)}] {Level(entry.LogLevel)}: {typeLabel}");
 		Console.ForegroundColor = color;
 		Console.WriteLine(entry.Message.Replace("\n", "\n\t"));
 		if (entry.MessageDarkExtra != null)

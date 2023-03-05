@@ -2,11 +2,6 @@
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Configuration;
-using Microsoft.Extensions.Options;
-using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace Xkit.Logging.ConsoleLogger;
 
