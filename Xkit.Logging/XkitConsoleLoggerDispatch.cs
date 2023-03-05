@@ -54,6 +54,7 @@ internal class XkitConsoleLoggerDispatch
 	{
 		var originalColor = Console.ForegroundColor;
 		var color = GetColor(entry);
+		/*
 		var type = entry.StateType;
 		var typeLabel = type?.ToString();
 		if (typeLabel == "Microsoft.Extensions.Logging.FormattedLogValues") // omit default state type
@@ -64,8 +65,9 @@ internal class XkitConsoleLoggerDispatch
 		{
 			typeLabel += ": ";
 		}
+		*/
 		Console.ForegroundColor = Dark(color);
-		Console.Write($"[{entry.Time.ToLocalIfConfigured(_config).ToString(_dateFormat)}] {Level(entry.LogLevel)}: {typeLabel}");
+		Console.Write($"[{entry.Time.ToLocalIfConfigured(_config).ToString(_dateFormat)}] {Level(entry.LogLevel)}: "); // {typeLabel}
 		Console.ForegroundColor = color;
 		Console.WriteLine(entry.Message.Replace("\n", "\n\t"));
 		if (entry.MessageDarkExtra != null)
